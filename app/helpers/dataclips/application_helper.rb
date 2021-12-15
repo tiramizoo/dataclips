@@ -53,14 +53,14 @@ module Dataclips::ApplicationHelper
 
   def load_custom_dataclips_formatters(insight)
     formatters_path = File.join(Dataclips::Engine.config.path, insight.clip_id, "formatters.js")
-    if File.exists?(formatters_path)
+    if File.exist?(formatters_path)
       File.read(formatters_path)
     end
   end
 
   def load_custom_dataclips_options(insight)
     options_path = File.join(Dataclips::Engine.config.path, insight.clip_id, "options.js")
-    if File.exists?(options_path)
+    if File.exist?(options_path)
       File.read(options_path)
     end
   end
