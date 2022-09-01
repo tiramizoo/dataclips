@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.description = "Heroku inspired dataclips for your application."
   s.license     = "MIT"
 
-  s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
+  s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"]
   s.add_dependency "rails", ">= 6.1"
   s.add_dependency "pg_clip", "0.1.4"

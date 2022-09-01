@@ -5,7 +5,7 @@ module.exports = {
   entry: [path.resolve(__dirname, 'src', 'index.js')],
   output: {
     filename: 'dataclips-bundle.js',
-    path: path.resolve(__dirname, './dist')
+    path: path.resolve(__dirname, '../app/assets/javascripts/dataclips', './dist')
   },
   module: {
     rules: [
