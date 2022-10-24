@@ -150,7 +150,7 @@ export default class Dataclips {
       date_formatter: { id: 1, numFmtId: 14 },
       time_formatter: { id: 2, numFmtId: 21 },
       datetime_formatter: { id: 3, numFmtId: 22 },
-      duration_formatter: { id: 4, numFmtId: 46 },
+      duration_formatter: { id: 4, numFmtId: 20 },
     };
 
     const stylesheet = workbook.getStyleSheet();
@@ -259,7 +259,7 @@ export default class Dataclips {
                 return value.toFormat("yyyy-MM-dd HH:mm:ss");
               case "time":
               case "duration":
-                return value.toFormat("hh:mm:ss");
+                return value.toFormat("hh:mm");
               case "boolean":
                 return value.toString().toUpperCase();
               default:
