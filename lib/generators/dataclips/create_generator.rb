@@ -22,6 +22,7 @@ module Dataclips
             when :datetime, :timestamp then "datetime"
             when :time then "time"
             when :duration then "duration"
+            when :duration_without_seconds then "duration_without_seconds"
             when :boolean then "boolean"
             else
               "text"

@@ -150,7 +150,8 @@ export default class Dataclips {
       date_formatter: { id: 1, numFmtId: 14 },
       time_formatter: { id: 2, numFmtId: 21 },
       datetime_formatter: { id: 3, numFmtId: 22 },
-      duration_formatter: { id: 4, numFmtId: 20 },
+      duration_formatter: { id: 4, numFmtId: 46 },
+      duration_without_seconds_formatter: { id: 5, numFmtId: 20 }
     };
 
     const stylesheet = workbook.getStyleSheet();
@@ -202,6 +203,11 @@ export default class Dataclips {
               return {
                 value: value.as("day"),
                 metadata: { style: xlsx_number_formats.duration_formatter.id },
+              };
+            case "duration_without_seconds":
+              return {
+                value: value.as("day"),
+                metadata: { style: xlsx_number_formats.duration_without_seconds_formatter.id },
               };
             default:
               return value;
@@ -259,6 +265,8 @@ export default class Dataclips {
                 return value.toFormat("yyyy-MM-dd HH:mm:ss");
               case "time":
               case "duration":
+                return value.toFormat("hh:mm:ss");
+              case "duration_without_seconds":
                 return value.toFormat("hh:mm");
               case "boolean":
                 return value.toString().toUpperCase();
