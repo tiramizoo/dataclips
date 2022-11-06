@@ -234,7 +234,6 @@ export default class Dataclips {
     if (data === null || !data.length) {
       return null;
     }
-    const withoutSecondsFormatter = disableSeconds ? "hh:mm" : "hh:mm:ss";
     const decimalSeparator = new Intl.NumberFormat()
       .formatToParts(1.1)
       .find((part) => part.type === "decimal").value;
@@ -264,7 +263,9 @@ export default class Dataclips {
                 return value.toFormat("yyyy-MM-dd HH:mm:ss");
               case "time":
               case "duration":
-                return value.toFormat(withoutSecondsFormatter);
+                return value.toFormat("hh:mm:ss");
+              case "duration_without_seconds":
+                return value.toFormat("hh:mm")
               case "boolean":
                 return value.toString().toUpperCase();
               default:
