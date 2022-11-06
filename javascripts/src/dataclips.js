@@ -145,6 +145,7 @@ export default class Dataclips {
 
   downloadXLSX(data, schema, filename, disableSeconds) {
     const workbook = Builder.createWorkbook();
+
     const xlsx_number_formats = {
       date_formatter: { id: 1, numFmtId: 14 },
       time_formatter: { id: 2, numFmtId: 21 },
@@ -234,6 +235,7 @@ export default class Dataclips {
     if (data === null || !data.length) {
       return null;
     }
+
     const decimalSeparator = new Intl.NumberFormat()
       .formatToParts(1.1)
       .find((part) => part.type === "decimal").value;
