@@ -145,12 +145,12 @@ export default class Dataclips {
 
   downloadXLSX(data, schema, filename, disableSeconds) {
     const workbook = Builder.createWorkbook();
-    const withoutSecondsFormatter = disableSeconds ? 20 : 46;
     const xlsx_number_formats = {
       date_formatter: { id: 1, numFmtId: 14 },
       time_formatter: { id: 2, numFmtId: 21 },
       datetime_formatter: { id: 3, numFmtId: 22 },
-      duration_formatter: { id: 4, numFmtId: withoutSecondsFormatter },
+      duration_formatter: { id: 4, numFmtId: 46 },
+      duration_without_seconds_formatter: { id: 5, numFmtId: 20 },
     };
 
     const stylesheet = workbook.getStyleSheet();
@@ -202,6 +202,11 @@ export default class Dataclips {
               return {
                 value: value.as("day"),
                 metadata: { style: xlsx_number_formats.duration_formatter.id },
+              };
+            case "duration_without_seconds":
+              return {
+                value: value.as("day"),
+                metadata: { style: xlsx_number_formats.duration_without_seconds_formatter.id },
               };
             default:
               return value;
