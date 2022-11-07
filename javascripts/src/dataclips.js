@@ -143,14 +143,15 @@ export default class Dataclips {
       });
   }
 
-  downloadXLSX(data, schema, filename) {
+  downloadXLSX(data, schema, filename, disableSeconds) {
     const workbook = Builder.createWorkbook();
+    const withoutSecondsFormatter = disableSeconds ? 20 : 46
 
     const xlsx_number_formats = {
       date_formatter: { id: 1, numFmtId: 14 },
       time_formatter: { id: 2, numFmtId: 21 },
       datetime_formatter: { id: 3, numFmtId: 22 },
-      duration_formatter: { id: 4, numFmtId: 46 },
+      duration_formatter: { id: 4, numFmtId: withoutSecondsFormatter },
     };
 
     const stylesheet = workbook.getStyleSheet();
@@ -225,11 +226,12 @@ export default class Dataclips {
     });
   }
 
-  downloadCSV(data, schema, filename) {
+  downloadCSV(data, schema, filename, disableSeconds) {
     if (data === null || !data.length) {
       return null;
     }
 
+    const withoutSecondsFormatter = disableSeconds ? "hh:mm" : "hh:mm:ss";
     const decimalSeparator = new Intl.NumberFormat()
       .formatToParts(1.1)
       .find((part) => part.type === "decimal").value;
@@ -259,7 +261,7 @@ export default class Dataclips {
                 return value.toFormat("yyyy-MM-dd HH:mm:ss");
               case "time":
               case "duration":
-                return value.toFormat("hh:mm:ss");
+                return value.toFormat(withoutSecondsFormatter);
               case "boolean":
                 return value.toString().toUpperCase();
               default:
@@ -337,7 +339,7 @@ export default class Dataclips {
             if (filename !== null) {
               button.disabled = true;
               const data = reactable.getFilteredData();
-              downloadXLSX(data, reactable.getFilteredSchema(), filename).then(
+              downloadXLSX(data, reactable.getFilteredSchema(), filename, reactable.config.disableSeconds).then(
                 () => {
                   button.disabled = false;
                 }
@@ -360,7 +362,7 @@ export default class Dataclips {
             if (filename !== null) {
               button.disabled = true;
               const data = reactable.getFilteredData();
-              downloadCSV(data, reactable.getFilteredSchema(), filename).then(
+              downloadCSV(data, reactable.getFilteredSchema(), filename, reactable.config.disableSeconds).then(
                 () => {
                   button.disabled = false;
                 }
