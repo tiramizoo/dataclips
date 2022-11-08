@@ -225,6 +225,7 @@ export default class Dataclips {
 
       rows.push(row);
     });
+
     sheet.setData(rows);
     workbook.addWorksheet(sheet);
     return new Promise(function (resolve, reject) {
