@@ -144,6 +144,10 @@ export default class Dataclips {
   }
 
   downloadXLSX(data, schema, filename, disableSeconds) {
+    function formatZeros(value) {
+      return value >= 10 ? value : `0${value}`
+    }
+
     const workbook = Builder.createWorkbook();
     const withoutSecondsFormatter = disableSeconds ? 20 : 46
 
@@ -200,10 +204,17 @@ export default class Dataclips {
                 metadata: { style: xlsx_number_formats.datetime_formatter.id },
               };
             case "duration":
-              return {
-                value: value.as("day"),
-                metadata: { style: xlsx_number_formats.duration_formatter.id },
-              };
+              if (disableSeconds) {
+                return {
+                  value: value.values["hours"] + ":" + formatZeros(Math.abs(value.values["minutes"])),
+                  metadata: { style: xlsx_number_formats.duration_formatter.id },
+                };
+              } else {
+                return {
+                  value: value.values["hours"] + ":" + formatZeros(Math.abs(value.values["minutes"])) + ":" + formatZeros(Math.abs(value.values["seconds"])),
+                  metadata: { style: xlsx_number_formats.duration_formatter.id },
+                };
+              }
             default:
               return value;
           }
@@ -214,7 +225,6 @@ export default class Dataclips {
 
       rows.push(row);
     });
-    console.log('data', data)
     sheet.setData(rows);
     workbook.addWorksheet(sheet);
     return new Promise(function (resolve, reject) {
