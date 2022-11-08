@@ -149,13 +149,11 @@ export default class Dataclips {
     }
 
     const workbook = Builder.createWorkbook();
-    const withoutSecondsFormatter = disableSeconds ? 20 : 46
 
     const xlsx_number_formats = {
       date_formatter: { id: 1, numFmtId: 14 },
       time_formatter: { id: 2, numFmtId: 21 },
       datetime_formatter: { id: 3, numFmtId: 22 },
-      duration_formatter: { id: 4, numFmtId: withoutSecondsFormatter },
     };
 
     const stylesheet = workbook.getStyleSheet();
@@ -207,12 +205,10 @@ export default class Dataclips {
               if (disableSeconds) {
                 return {
                   value: value.values["hours"] + ":" + formatZeros(Math.abs(value.values["minutes"])),
-                  metadata: { style: xlsx_number_formats.duration_formatter.id },
                 };
               } else {
                 return {
                   value: value.values["hours"] + ":" + formatZeros(Math.abs(value.values["minutes"])) + ":" + formatZeros(Math.abs(value.values["seconds"])),
-                  metadata: { style: xlsx_number_formats.duration_formatter.id },
                 };
               }
             default:
