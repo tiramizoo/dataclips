@@ -145,7 +145,11 @@ export default class Dataclips {
 
   downloadXLSX(data, schema, filename, disableSeconds) {
     function formatZeros(value) {
-      return value >= 10 ? value : `0${value}`
+      if (isNaN(value)) {
+        return '00'
+      } else {
+        return value >= 10 ? value : `0${value}`
+      }
     }
 
     const workbook = Builder.createWorkbook();
