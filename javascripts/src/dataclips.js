@@ -158,6 +158,7 @@ export default class Dataclips {
       date_formatter: { id: 1, numFmtId: 14 },
       time_formatter: { id: 2, numFmtId: 21 },
       datetime_formatter: { id: 3, numFmtId: 22 },
+      duration_formatter: { id: 4, numFmtId: 46 },
     };
 
     const stylesheet = workbook.getStyleSheet();
@@ -212,7 +213,8 @@ export default class Dataclips {
                 };
               } else {
                 return {
-                  value: value.values["hours"] + ":" + formatZeros(Math.abs(value.values["minutes"])) + ":" + formatZeros(Math.abs(value.values["seconds"])),
+                  value: value.as("day"),
+                  metadata: { style: xlsx_number_formats.duration_formatter.id },
                 };
               }
             default:
