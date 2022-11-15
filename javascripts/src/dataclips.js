@@ -242,7 +242,8 @@ export default class Dataclips {
       return null;
     }
 
-    const withoutSecondsFormatter = disableSeconds ? "hh:mm" : "hh:mm:ss";
+    const withoutSecondsDurationFormatter = disableSeconds ? "hh:mm" : "hh:mm:ss";
+    const withoutSecondsDatetimeFormatter = disableSeconds ? "yyyy-MM-dd HH:mm" : "yyyy-MM-dd HH:mm:ss";
     const decimalSeparator = new Intl.NumberFormat()
       .formatToParts(1.1)
       .find((part) => part.type === "decimal").value;
@@ -269,10 +270,10 @@ export default class Dataclips {
               case "date":
                 return value;
               case "datetime":
-                return value.toFormat("yyyy-MM-dd HH:mm:ss");
+                return value.toFormat(withoutSecondsDatetimeFormatter);
               case "time":
               case "duration":
-                return value.toFormat(withoutSecondsFormatter);
+                return value.toFormat(withoutSecondsDurationFormatter);
               case "boolean":
                 return value.toString().toUpperCase();
               default:
