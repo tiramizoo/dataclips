@@ -145,10 +145,10 @@ export default class Dataclips {
 
   downloadXLSX(data, schema, filename, disableSeconds) {
     function formatZeros(value) {
-      if (isNaN(value)) {
-        return '00'
-      } else {
+      if (value) { // 1:00:53 is returned as { hours: 1, seconds: 53 }
         return value >= 10 ? value : `0${value}`
+      } else {
+        return '00'
       }
     }
 
@@ -202,21 +202,29 @@ export default class Dataclips {
                 metadata: { style: xlsx_number_formats.time_formatter.id },
               };
             case "datetime":
-              return {
-                value: 25569 + (value.ts + value.offset * minMs) / dayMs,
-                metadata: { style: xlsx_number_formats.datetime_formatter.id },
-              };
+              if (disableSeconds) {
+                return new Date(value.ts).toLocaleString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'})
+              } else {
+                return {
+                  value: 25569 + (value.ts + value.offset * minMs) / dayMs,
+                  metadata: { style: xlsx_number_formats.time_formatter.id },
+                };
+              }
             case "duration":
               if (disableSeconds) {
+                const correctedHoursValue = value.values["days"] !== undefined ? value.values["hours"] : value.values["days"] * 24 + value.values["hours"]
+                if (value.values["days"] !== undefined) {
+                  value.values["hours"] += value.values["days"] * 24
+                }
                 return {
-                  value: value.values["hours"] + ":" + formatZeros(Math.abs(value.values["minutes"])),
+                  value: correctedHoursValue + ":" + formatZeros(value.values["minutes"]),
                 };
               } else {
                 return {
                   value: value.as("day"),
                   metadata: { style: xlsx_number_formats.duration_formatter.id },
                 };
-              }
+              };
             default:
               return value;
           }
