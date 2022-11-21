@@ -146,7 +146,7 @@ export default class Dataclips {
   downloadXLSX(data, schema, filename, disableSeconds) {
     function formatZeros(value) {
       if (value) { // 1:00:53 is returned as { hours: 1, seconds: 53 }
-        return Math.abs(value) >= 10 ? value : `0${value}`
+        return value >= 10 ? value : `0${value}`
       } else {
         return '00'
       }
@@ -212,7 +212,7 @@ export default class Dataclips {
               }
             case "duration":
               if (disableSeconds) {
-                const correctedHoursValue = value.values["days"] === undefined ? value.values["hours"] : value.values["days"] * 24 + value.values["hours"]
+                const correctedHoursValue = value.values["days"] ? value.values["days"] * 24 + value.values["hours"] : value.values["hours"]
                 return {
                   value: correctedHoursValue + ":" + formatZeros(value.values["minutes"]),
                 };
