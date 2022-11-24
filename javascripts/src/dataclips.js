@@ -143,7 +143,15 @@ export default class Dataclips {
       });
   }
 
-  downloadXLSX(data, schema, filename) {
+  downloadXLSX(data, schema, filename, disableSeconds) {
+    function formatZeros(value) {
+      if (value) { // 1:00:53 is returned as { hours: 1, seconds: 53 }
+        return value >= 10 ? value : `0${value}`
+      } else {
+        return '00'
+      }
+    }
+
     const workbook = Builder.createWorkbook();
 
     const xlsx_number_formats = {
@@ -194,14 +202,25 @@ export default class Dataclips {
                 metadata: { style: xlsx_number_formats.time_formatter.id },
               };
             case "datetime":
-              return {
-                value: 25569 + (value.ts + value.offset * minMs) / dayMs,
-                metadata: { style: xlsx_number_formats.datetime_formatter.id },
-              };
+              if (disableSeconds) {
+                return new Date(value.ts).toLocaleString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'})
+              } else {
+                return {
+                  value: 25569 + (value.ts + value.offset * minMs) / dayMs,
+                  metadata: { style: xlsx_number_formats.time_formatter.id },
+                };
+              }
             case "duration":
-              return {
-                value: value.as("day"),
-                metadata: { style: xlsx_number_formats.duration_formatter.id },
+              if (disableSeconds) {
+                const correctedHoursValue = value.values["days"] ? value.values["days"] * 24 + value.values["hours"] : value.values["hours"]
+                return {
+                  value: correctedHoursValue + ":" + formatZeros(value.values["minutes"]),
+                };
+              } else {
+                return {
+                  value: value.as("day"),
+                  metadata: { style: xlsx_number_formats.duration_formatter.id },
+                };
               };
             default:
               return value;
@@ -225,11 +244,13 @@ export default class Dataclips {
     });
   }
 
-  downloadCSV(data, schema, filename) {
+  downloadCSV(data, schema, filename, disableSeconds) {
     if (data === null || !data.length) {
       return null;
     }
 
+    const withoutSecondsDurationFormatter = disableSeconds ? "hh:mm" : "hh:mm:ss";
+    const withoutSecondsDatetimeFormatter = disableSeconds ? "yyyy-MM-dd HH:mm" : "yyyy-MM-dd HH:mm:ss";
     const decimalSeparator = new Intl.NumberFormat()
       .formatToParts(1.1)
       .find((part) => part.type === "decimal").value;
@@ -256,10 +277,10 @@ export default class Dataclips {
               case "date":
                 return value;
               case "datetime":
-                return value.toFormat("yyyy-MM-dd HH:mm:ss");
+                return value.toFormat(withoutSecondsDatetimeFormatter);
               case "time":
               case "duration":
-                return value.toFormat("hh:mm:ss");
+                return value.toFormat(withoutSecondsDurationFormatter);
               case "boolean":
                 return value.toString().toUpperCase();
               default:
@@ -337,7 +358,7 @@ export default class Dataclips {
             if (filename !== null) {
               button.disabled = true;
               const data = reactable.getFilteredData();
-              downloadXLSX(data, reactable.getFilteredSchema(), filename).then(
+              downloadXLSX(data, reactable.getFilteredSchema(), filename, reactable.config.disableSeconds).then(
                 () => {
                   button.disabled = false;
                 }
@@ -360,7 +381,7 @@ export default class Dataclips {
             if (filename !== null) {
               button.disabled = true;
               const data = reactable.getFilteredData();
-              downloadCSV(data, reactable.getFilteredSchema(), filename).then(
+              downloadCSV(data, reactable.getFilteredSchema(), filename, reactable.config.disableSeconds).then(
                 () => {
                   button.disabled = false;
                 }
