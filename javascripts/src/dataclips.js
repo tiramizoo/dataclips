@@ -212,7 +212,7 @@ export default class Dataclips {
               }
             case "duration":
               if (disableSeconds) {
-                const correctedHoursValue = value.values["days"] ? value.values["days"] * 24 + value.values["hours"] : value.values["hours"]
+                const correctedHoursValue = value.values["days"] ? value.values["days"] * 24 + value.values["hours"] : formatZeros(value.values["hours"])
                 return {
                   value: correctedHoursValue + ":" + formatZeros(value.values["minutes"]),
                 };
