@@ -4,8 +4,7 @@ module Dataclips::ApplicationHelper
     options.stringify_keys!
     params.stringify_keys!
 
-    # insight options: time_zone, per_page, connection, schema
-    insight = Dataclips::Insight.get!(clip_id, params, options.slice('time_zone', 'per_page', 'connection', 'schema'))
+    insight = Dataclips::Insight.get!(clip_id, params, options.slice('time_zone', 'per_page', 'connection', 'name'))
     display_insight(insight, options, &block)
   end
 
