@@ -49,7 +49,7 @@ module Dataclips
       Digest::MD5.hexdigest({
         params: params,
         options: options
-      }.compact_blank.to_s)
+      }.compact_blank.as_json.to_s)
     end
   end
 end
