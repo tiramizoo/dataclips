@@ -25,7 +25,7 @@ class Dataclips::Paginator
     connection.execute <<-SQL
       SET intervalstyle = 'iso_8601';
       WITH insight AS MATERIALIZED (#{query}), stats AS MATERIALIZED (
-        SELECT #{page} AS page, COUNT(*) AS total_count, CEIL(COUNT(*) / #{per_page}) AS total_pages FROM insight
+        SELECT #{page} AS page, COUNT(*) AS total_count, CEIL(COUNT(*) / #{per_page}::numeric) AS total_pages FROM insight
       )
 
       SELECT stats.*, row_to_json(insight) AS record FROM stats, insight OFFSET #{offset} LIMIT #{per_page};
