@@ -52,9 +52,9 @@ class Dataclips::InsightsController < Dataclips::ApplicationController
 
       {
         records: records,
-        total_count: (records.first['total_count'] if records.any?),
-        page: (records.first['page'] if records.any?) || page,
-        total_pages: (records.first['total_pages'] if records.any?)
+        total_count: (result.first['total_count'] if records.any?),
+        page: (result.first['page'] if records.any?) || page,
+        total_pages: (result.first['total_pages'] if records.any?)
       }.compact
 
     else

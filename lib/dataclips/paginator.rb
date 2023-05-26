@@ -28,7 +28,7 @@ class Dataclips::Paginator
         SELECT #{page} AS page, COUNT(*) AS total_count, CEIL(COUNT(*) / #{per_page}) AS total_pages FROM insight
       )
 
-      SELECT row_to_json(insight) AS record, stats.* FROM insight, stats OFFSET #{offset} LIMIT #{per_page};
+      SELECT stats.*, row_to_json(insight) AS record FROM stats, insight OFFSET #{offset} LIMIT #{per_page};
     SQL
   end
 end
