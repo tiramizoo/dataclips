@@ -14,29 +14,21 @@ class Dataclips::Paginator
 
   def execute_query(query)
     connection.execute <<-SQL
-      WITH insight AS (#{query})
-
-      SELECT row_to_json(insight) AS record FROM insight
+      SET intervalstyle = 'iso_8601';
+      SELECT row_to_json(insight) AS record FROM (#{query}) insight;
     SQL
   end
 
-  def execute_paginated_query(query, page: 1, per_page: 1000)
+  def execute_paginated_query(query, page: 1, per_page: 10_000)
     offset = (page - 1) * per_page
 
     connection.execute <<-SQL
       SET intervalstyle = 'iso_8601';
-      WITH insight AS (#{query}), stats AS (
-        SELECT
-          #{page}                                 AS page,
-          COUNT(*)                                AS total_count,
-          CEIL(COUNT(*) / #{per_page}::numeric)   AS total_pages
-        FROM insight
+      WITH insight AS MATERIALIZED (#{query}), stats AS MATERIALIZED (
+        SELECT #{page} AS page, COUNT(*) AS total_count, CEIL(COUNT(*) / #{per_page}) AS total_pages FROM insight
       )
-      SELECT
-        stats.*,
-        row_to_json(insight) AS record
-      FROM insight, stats
-      OFFSET #{offset} LIMIT #{per_page};
+
+      SELECT row_to_json(insight) AS record, stats.* FROM insight, stats OFFSET #{offset} LIMIT #{per_page};
     SQL
   end
 end

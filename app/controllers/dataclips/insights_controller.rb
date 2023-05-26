@@ -51,18 +51,18 @@ class Dataclips::InsightsController < Dataclips::ApplicationController
       first_record = result.first
       {
         records: result.pluck('record'),
-        page: first_record['page'],
-        total_count: first_record['total_count'],
-        total_pages: first_record['total_pages']
-      }
+        total_count: first_record&['total_count'],
+        page: first_record&['page'] || page,
+        total_pages: first_record&['total_pages']
+      }.compact
 
     else
       result = paginator.execute_query(query)
 
       {
         records: result.pluck('record'),
-        page: 1,
         total_count: result.ntuples,
+        page: 1,
         total_pages: 1
       }
     end
