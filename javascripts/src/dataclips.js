@@ -72,12 +72,13 @@ export default class Dataclips {
   fetch() {
     const { url, schema, reactable, fetchDataInBatches } = this;
     const processBatch = (result) => {
-      const { data, currentPage, total_count, total_pages } = result;
+      const { data, currentPage, totalCount, totalPages } = result;
 
-      if (currentPage < total_pages) {
+      if (currentPage < totalPages) {
         fetchDataInBatches(currentPage + 1, url, schema).then(processBatch);
       }
-      reactable.addData(result.data, total_count);
+
+      reactable.addData(result.data, totalCount);
     };
 
     fetchDataInBatches(1, url, schema).then(processBatch);
@@ -91,9 +92,10 @@ export default class Dataclips {
         return response.json();
       })
       .then(function (data) {
-        if (data.length) {
-          const records = data.map(function (i) {
-            const parsedRecord = JSON.parse(i.record);
+        if (data.records.length) {
+          const records = data.records.map(function (recordText) {
+            const parsedRecord = JSON.parse(recordText);
+
             let record = {};
 
             Object.entries(schema).forEach(([schemaKey, options]) => {
@@ -128,16 +130,16 @@ export default class Dataclips {
 
           return {
             data: records,
-            currentPage: data[0].page,
-            total_count: data[0].total_count,
-            total_pages: data[0].total_pages,
+            currentPage: data.page,
+            totalCount: data.total_count,
+            totalPages: data.total_pages
           };
         } else {
           return {
             data: [],
             currentPage: page,
-            total_count: data.length,
-            total_pages: page,
+            totalCount: 0,
+            totalPages: page,
           };
         }
       });
