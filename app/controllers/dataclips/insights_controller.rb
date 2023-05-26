@@ -48,12 +48,13 @@ class Dataclips::InsightsController < Dataclips::ApplicationController
     if per_page
       result = paginator.execute_paginated_query(query, page: page, per_page: per_page)
 
-      first_record = result.first
+      records = result.pluck('record')
+
       {
-        records: result.pluck('record'),
-        total_count: first_record&['total_count'],
-        page: first_record&['page'] || page,
-        total_pages: first_record&['total_pages']
+        records: records,
+        total_count: (records.first['total_count'] if records.any?),
+        page: (records.first['page'] if records.any?) || page,
+        total_pages: (records.first['total_pages'] if records.any?)
       }.compact
 
     else
