@@ -266,9 +266,8 @@ export default class Dataclips {
               );
             }
           },
-          className: "r-icon-doc-text",
           key: "csv",
-          label: "CSV",
+          label: "Download CSV",
         },
         refresh: {
           onClick: (e) => {
@@ -276,7 +275,6 @@ export default class Dataclips {
             reactable.clearData();
             fetch.apply(this);
           },
-          className: "r-icon-arrows-cw",
           key: "refresh",
           label: "Refresh",
         },
