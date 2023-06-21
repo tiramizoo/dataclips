@@ -246,6 +246,7 @@ export default class Dataclips {
       },
       disableSeconds: disable_seconds,
       selectable: selectable,
+      fileName: name,
       controls: {
         csv: {
           onClick: (e) => {
