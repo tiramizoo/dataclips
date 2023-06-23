@@ -1,9 +1,5 @@
 import { saveAs } from "file-saver";
 
-ExcelBuilder = require("excel-builder-webpack");
-
-const { Workbook, Builder } = ExcelBuilder;
-
 export default class Dataclips {
   constructor(config, customFormatters, customOptions) {
     let schema = Object.assign({}, config.schema);
