@@ -25,12 +25,7 @@ export default class Dataclips {
 
       if (customOptions.filters) {
         Object.keys(customOptions.filters).forEach((filterName) => {
-          filters[filterName] = {};
-          Object.keys(customOptions.filters[filterName]).forEach((key) => {
-            filters[filterName][key] = {
-              value: customOptions.filters[filterName][key],
-            };
-          });
+          filters[filterName] = customOptions.filters[filterName];
         });
       }
     }
@@ -236,7 +231,6 @@ export default class Dataclips {
       searchPresets: filters,
       actions: rowActions,
       displayTimeZone: time_zone,
-      defaultSearchPreset: default_filter,
       itemsChange: (items) => {
         this.onChange(items);
       },
