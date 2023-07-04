@@ -40,6 +40,7 @@ export default class Dataclips {
     this.filters = filters;
     this.disable_seconds = config.disable_seconds;
     this.selectable = config.selectable;
+    this.reactable_locale = config.reactable_locale;
 
     if (config.limit) {
       this.limit = config.limit;
@@ -221,6 +222,7 @@ export default class Dataclips {
       fetch,
       disable_seconds,
       selectable,
+      reactable_locale,
     } = this;
 
     const reactable = Reactable.init({
@@ -237,6 +239,7 @@ export default class Dataclips {
       disableSeconds: disable_seconds,
       selectable: selectable,
       fileName: name,
+      locale: reactable_locale,
       controls: {
         csv: {
           onClick: (e) => {
