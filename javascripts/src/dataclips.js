@@ -136,73 +136,6 @@ export default class Dataclips {
       });
   }
 
-  downloadCSV(data, schema, filename, disableSeconds) {
-    if (data === null || !data.length) {
-      return null;
-    }
-
-    const withoutSecondsDurationFormatter = disableSeconds ? "hh:mm" : "hh:mm:ss";
-    const withoutSecondsDatetimeFormatter = disableSeconds ? "yyyy-MM-dd HH:mm" : "yyyy-MM-dd HH:mm:ss";
-    const decimalSeparator = new Intl.NumberFormat()
-      .formatToParts(1.1)
-      .find((part) => part.type === "decimal").value;
-    const columnDelimiter = decimalSeparator === "." ? "," : ";";
-
-    let lines = [];
-
-    const headerRow = Object.values(schema)
-      .map((value) => `"${value.label}"`)
-      .join(columnDelimiter);
-
-    lines.push(headerRow);
-
-    data.forEach((item) => {
-      const row = Object.keys(schema)
-        .map((key) => {
-          const value = item[key];
-          if (value !== null) {
-            const type = schema[key].type;
-
-            switch (type) {
-              case "number":
-                return new Intl.NumberFormat().format(value);
-              case "date":
-                return value;
-              case "datetime":
-                return value.toFormat(withoutSecondsDatetimeFormatter);
-              case "time":
-              case "duration":
-                return value.toFormat(withoutSecondsDurationFormatter);
-              case "boolean":
-                return value.toString().toUpperCase();
-              default:
-                return value;
-            }
-          } else {
-            return null;
-          }
-        })
-        .map((fieldValue) => {
-          if (fieldValue !== null) {
-            return `"${fieldValue}"`;
-          } else {
-            return null;
-          }
-        })
-        .join(columnDelimiter);
-
-      lines.push(row);
-    });
-
-    const result = lines.join("\n");
-
-    return new Promise((resolve, reject) => {
-      var blob = new Blob([result], { type: "text/csv;charset=utf-8" });
-      saveAs(blob, filename);
-      resolve();
-    });
-  }
-
   init(fn) {
     const {
       container,
@@ -214,7 +147,6 @@ export default class Dataclips {
       time_zone,
       url,
       fetchDataInBatches,
-      downloadCSV,
       filters,
       default_filter,
       rowActions,
@@ -238,28 +170,6 @@ export default class Dataclips {
       selectable: selectable,
       fileName: name,
       controls: {
-        csv: {
-          onClick: (e) => {
-            e.stopPropagation();
-
-            const button = e.target;
-            const suggestedFilename = `${name}.csv`;
-
-            const filename = prompt("filename", suggestedFilename);
-
-            if (filename !== null) {
-              button.disabled = true;
-              const data = reactable.getFilteredData();
-              downloadCSV(data, reactable.getFilteredSchema(), filename, reactable.config.disableSeconds).then(
-                () => {
-                  button.disabled = false;
-                }
-              );
-            }
-          },
-          key: "csv",
-          label: "Download CSV",
-        },
         refresh: {
           onClick: (e) => {
             e.stopPropagation();
