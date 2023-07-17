@@ -8,9 +8,7 @@
     "build:dev": "webpack --mode=development --watch --config javascripts/webpack.config.js",
     "build:prod": "webpack --mode=production --config javascripts/webpack.config.js"
   },
-  "dependencies": {
-    "file-saver": "^2.0.5"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.2.0",
     "@babel/polyfill": "^7.0.0",

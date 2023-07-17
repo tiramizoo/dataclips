@@ -1,5 +1,3 @@
-import { saveAs } from "file-saver";
-
 export default class Dataclips {
   constructor(config, customFormatters, customOptions) {
     let schema = Object.assign({}, config.schema);
