@@ -31,7 +31,6 @@ export default class Dataclips {
     this.schema = schema;
     this.container = document.getElementById(config.dom_id);
     this.identifier = config.identifier;
-    this.per_page = config.per_page;
     this.url = config.url;
     this.name = config.name;
     this.time_zone = config.time_zone;
@@ -140,11 +139,8 @@ export default class Dataclips {
       name,
       schema,
       identifier,
-      per_page,
       limit,
       time_zone,
-      url,
-      fetchDataInBatches,
       filters,
       default_filter,
       rowActions,
@@ -167,6 +163,7 @@ export default class Dataclips {
       disableSeconds: disable_seconds,
       selectable: selectable,
       fileName: name,
+      locale: document.querySelector('html').getAttribute('lang') || Intl.NumberFormat().resolvedOptions().locale,
       controls: {
         refresh: {
           onClick: (e) => {
