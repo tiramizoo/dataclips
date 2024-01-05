@@ -59,17 +59,28 @@ export default class Dataclips {
 
   fetch() {
     const { url, schema, reactable, fetchDataInBatches } = this;
+
+    const handleServiceUnavailableError = (e) => {
+      if (e === "Service Unavailable" || e === "Internal Server Error") {
+        if (confirm("We are experiencing issues with our data source. Would you like to try again?")) {
+          this.refresh();
+        }
+      } else {
+        throw e;
+      }
+    }
+
     const processBatch = (result) => {
       const { data, currentPage, totalCount, totalPages } = result;
 
       if (currentPage < totalPages) {
-        fetchDataInBatches(currentPage + 1, url, schema).then(processBatch);
+        fetchDataInBatches(currentPage + 1, url, schema).then(processBatch).catch(handleServiceUnavailableError);
       }
 
       reactable.addData(result.data, totalCount);
     };
 
-    fetchDataInBatches(1, url, schema).then(processBatch);
+    fetchDataInBatches(1, url, schema).then(processBatch).catch(handleServiceUnavailableError);
   }
 
   fetchDataInBatches(page = 1, url, schema) {
@@ -77,7 +88,11 @@ export default class Dataclips {
 
     return fetch(url + "?page=" + page)
       .then(function (response) {
-        return response.json();
+        if (response.ok) {
+          return response.json();
+        } else {
+          return Promise.reject(response.statusText);
+        }
       })
       .then(function (data) {
         if (data.records.length) {
@@ -130,7 +145,7 @@ export default class Dataclips {
             totalPages: page,
           };
         }
-      });
+      })
   }
 
   init(fn) {
