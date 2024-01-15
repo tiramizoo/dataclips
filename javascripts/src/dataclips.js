@@ -62,8 +62,16 @@ export default class Dataclips {
 
     const handleServiceUnavailableError = (e) => {
       if (e === "Service Unavailable" || e === "Internal Server Error") {
-        if (confirm("We are experiencing issues with our data source. Would you like to try again?")) {
-          this.refresh();
+
+        const confirmMessage = ((document.documentElement.lang === 'de')) ?
+          "Es sieht so aus, als würde der Server zu lange brauchen, um zu antworten. Dies kann entweder an einer schlechten Internetverbindung oder einem Fehler bei unseren Servern liegen. Bitte versuchen Sie es in beiden Fällen gleich noch einmal."
+        :
+          "Looks like the server is taking to long to respond, this can be caused by either poor connectivity or an error with our servers. In both cases please try again now."
+
+        if (confirm(confirmMessage)) {
+          setTimeout(() => {
+            this.refresh();
+          }, 2500)
         }
       } else {
         throw e;
